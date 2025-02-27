@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-site
+spec:
+  containers:
+  - name: caddy
+    image: roarceus/static-site:latest
+    imagePullPolicy: Always
+    ports:
+    - containerPort: 8080
+    env:
+    - name: TEAM_NAME
+      valueFrom:
+        configMapKeyRef:
+          name: static-site-config
+          key: team.name
+    - name: PROJECT_NAME
+      valueFrom:
+        configMapKeyRef:
+          name: static-site-config
+          key: project.name
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 5
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 5
+    startupProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      failureThreshold: 30
+      periodSeconds: 10
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 100m
+      limits:
+        memory: 256Mi
+        cpu: 200m
+  imagePullSecrets:
+  - name: dockerhub-secret
