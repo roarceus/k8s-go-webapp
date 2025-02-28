@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config-map
+data:
+  DB_PORT: "5432"
+  DB_NAME: "webapp"
+  DB_URL: "jdbc:postgresql://postgres.default.svc.cluster.local:5432/webapp"
+  DB_HOST: "postgres.default.svc.cluster.local"
